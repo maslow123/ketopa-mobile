@@ -25,7 +25,7 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> login() async {
-    final url = Uri.parse('http://10.107.254.37:8000/api/v1/user/login');
+    final url = Uri.parse('http://localhost:8000/api/v1/user/login');
     print(usernameController.text);
     print(passwordController.text);
     final response = await http.post(url,

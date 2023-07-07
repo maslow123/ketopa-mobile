@@ -20,10 +20,10 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
   List<Product> _products = [];
-  int _cartCount = 0;
   String? name;
   String? phone;
-  String? address; // Variable to track the cart count
+  String? address;
+  List<Product> tempCart = [];
 
   @override
   void initState() {
@@ -33,8 +33,8 @@ class _HomeState extends State<Home> {
   }
 
   void fetchProducts() async {
-    final response = await http
-        .get(Uri.parse('http://10.107.254.37:8000/api/v1/product/list'));
+    final response =
+        await http.get(Uri.parse('http://localhost:8000/api/v1/product/list'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -52,9 +52,12 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void addToCart() {
+  void addToCart(Product item) {
     setState(() {
-      _cartCount++; // Increment the cart count
+      if (!tempCart.contains(item)) {
+        tempCart.add(item);
+        item.quantity++;
+      } // Increment the cart count
     });
   }
 
@@ -85,8 +88,11 @@ class _HomeState extends State<Home> {
       ProductListScreen(
         products: _products,
         addToCart: addToCart,
+        tempCart: tempCart,
       ),
-      Cart(),
+      Cart(
+        tempCart: tempCart,
+      ),
       ListTransactionPage(),
     ];
 
@@ -117,7 +123,7 @@ class _HomeState extends State<Home> {
             icon: Stack(
               children: [
                 Icon(Icons.shopping_cart),
-                if (_cartCount > 0)
+                if (tempCart.length > 0)
                   Positioned(
                     top: 0,
                     right: 0,
@@ -132,7 +138,7 @@ class _HomeState extends State<Home> {
                         minHeight: 12,
                       ),
                       child: Text(
-                        _cartCount.toString(),
+                        tempCart.length.toString(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 8,
@@ -157,14 +163,16 @@ class _HomeState extends State<Home> {
 
 class ProductListScreen extends StatelessWidget {
   final List<Product> products;
-  final VoidCallback addToCart; // Callback function to add product to cart
+  final Function addToCart; // Callback function to add product to cart
   final String? name;
   final String? phone;
   final String? address;
+  final List<Product> tempCart;
 
   ProductListScreen({
     required this.products,
     required this.addToCart,
+    required this.tempCart,
     this.name,
     this.phone,
     this.address,
@@ -186,7 +194,8 @@ class ProductListScreen extends StatelessWidget {
           subtitle: Text(product.category),
           trailing: IconButton(
             onPressed: () {
-              addToCart(); // Call the addToCart function to increment the cart count
+              addToCart(
+                  product); // Call the addToCart function to increment the cart count
             },
             icon: Icon(Icons.add_shopping_cart),
           ),
@@ -203,15 +212,16 @@ class Product {
   final String image;
   final double price;
   final int stock;
+  int quantity;
 
-  Product({
-    required this.id,
-    required this.category,
-    required this.name,
-    required this.image,
-    required this.price,
-    required this.stock,
-  });
+  Product(
+      {required this.id,
+      required this.category,
+      required this.name,
+      required this.image,
+      required this.price,
+      required this.stock,
+      this.quantity = 0});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(

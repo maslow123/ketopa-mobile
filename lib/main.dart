@@ -60,7 +60,9 @@ class MainRouting extends StatelessWidget {
                     "/home": (context) => Home(),
                     "/login": (context) => Login(),
                     "/regis": (context) => Regis(),
-                    "/cart": (context) => Cart(),
+                    "/cart": (context) => Cart(
+                          tempCart: [],
+                        ),
                     "/upload": (context) => Upload(),
                     "/list-transaction": (context) => ListTransactionPage(),
                     "/user/list": (context) => UserList(),

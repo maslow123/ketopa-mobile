@@ -24,6 +24,28 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
     validasi();
   }
 
+  void postApprove(transactionId) async {
+    var apiUrl =
+        Uri.parse('http://localhost:8000/api/v1/transaction/$transactionId');
+    var response = await http.put(
+      apiUrl,
+      body: jsonEncode({"status": 1}),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      // Registration successful, handle the response if needed
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Status Approved.')));
+      print(response.body);
+    } else {
+      // Registration failed, handle the response if needed
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed.')));
+      print(response.body);
+    }
+  }
+
   Future<void> fetchTransactions() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? id = prefs.getInt('id');
@@ -31,8 +53,8 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
     print(level);
 
     if (level == 1) {
-      final url = Uri.parse(
-          'http://10.107.254.37:8000/api/v1/transaction/list?user_id=0');
+      final url =
+          Uri.parse('http://localhost:8000/api/v1/transaction/list?user_id=0');
       final response = await http.get(
         url,
         headers: {
@@ -44,26 +66,29 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
         setState(() {
           transactions = jsonResponse['result'];
         });
+        print("ini transaksi ${transactions}");
       } else {
+        print('Failed to fetch transaction ${response.body}');
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('List Transaction Failed.')));
       }
     } else {
       final url = Uri.parse(
-          'http://10.107.254.37:8000/api/v1/transaction/list?user_id=$id');
+          'http://localhost:8000/api/v1/transaction/list?user_id=$id');
       final response = await http.get(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
       );
+
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         setState(() {
           transactions = jsonResponse['result'];
         });
       } else {
-        print('Failed to fetch transactions');
+        print('Failed to fetch transaction ${response.body}');
       }
     }
   }
@@ -111,6 +136,13 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Image.network(
+                        "http://localhost:8000/api/v1/upload/image/evidence/${transaction['data'][0]['transaction_evidence']}",
+                        scale: 7,
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
                       Text(
                         'Transaction Code: ${transaction['transaction_code']}',
                         style: TextStyle(fontWeight: FontWeight.bold),
@@ -144,11 +176,19 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
                 if (level == 1)
                   Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Card(
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: Text('Approve'),
-                      ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              transaction['data'][0]['transaction_status'] == 1
+                                  ? Colors.green
+                                  : Colors.blue),
+                      onPressed: () {
+                        postApprove(transaction["transaction_code"]);
+                      },
+                      child: Text(
+                          transaction['data'][0]['transaction_status'] == 1
+                              ? 'Approved'
+                              : 'Approve'),
                     ),
                   ),
               ],

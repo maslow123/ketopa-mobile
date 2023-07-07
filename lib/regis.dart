@@ -37,7 +37,7 @@ class _RegisState extends State<Regis> {
       "address": address,
     };
 
-    var apiUrl = Uri.parse('http://192.168.0.107:8000/api/v1/user/create');
+    var apiUrl = Uri.parse('http://localhost:8000/api/v1/user/create');
     var response = await http.post(
       apiUrl,
       body: jsonEncode(requestData),
@@ -141,6 +141,7 @@ class _RegisState extends State<Regis> {
               child: GestureDetector(
                 onTap: () {
                   // Handle registration button click
+                  print("ini pencet");
                   registerUser();
                 },
                 child: Container(
