@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home.dart';
 
@@ -16,6 +18,7 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   File? imageFile;
+  List cart = [];
 
   void uploadEvidence() async {
     await getFromGallery();
@@ -35,7 +38,13 @@ class _CartState extends State<Cart> {
         // Registration successful, handle the response if needed
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Upload successfully.')));
-        print("uploaded! ${(await http.Response.fromStream(response)).body}");
+
+        var res = await await http.Response.fromStream(response);
+        var resDecoded = json.decode(res.body);
+
+        print("uploaded! $resDecoded");
+
+        createTransaction(evidence: resDecoded['data']['filename']);
       } else {
         // Registration failed, handle the response if needed
         ScaffoldMessenger.of(context)
@@ -43,6 +52,42 @@ class _CartState extends State<Cart> {
         print(response.statusCode);
       }
     }
+  }
+
+  void createTransaction({required String evidence}) async {
+    Map<String, dynamic> requestData = {
+      "user_id": await getId(),
+      "products": cart,
+      "evidence": evidence
+    };
+
+    print("ini data ${requestData}");
+
+    var apiUrl = Uri.parse('http://localhost:8000/api/v1/transaction/create');
+    var response = await http.post(
+      apiUrl,
+      body: jsonEncode(requestData),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      // Registration successful, handle the response if needed
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Transaction successfully.')));
+      print(response.body);
+    } else {
+      // Registration failed, handle the response if needed
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Transaction failed.')));
+      print(response.body);
+    }
+  }
+
+  getId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    int? stringValue = prefs.getInt('id');
+    return stringValue;
   }
 
   void addItemToCart(Product product) {
@@ -87,12 +132,20 @@ class _CartState extends State<Cart> {
     double totalPrice = 0;
     for (final product in widget.tempCart) {
       totalPrice += product.price * product.quantity;
+      cart.add({
+        "product_id": product.id,
+        "quantity": product.quantity,
+        "total_amount": totalPrice,
+        "total": totalPrice
+      });
     }
+    print("ini cart $cart");
     return totalPrice;
   }
 
   void checkout() {
     // Implement your checkout logic here
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
