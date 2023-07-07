@@ -136,7 +136,6 @@ class _CartState extends State<Cart> {
         "product_id": product.id,
         "quantity": product.quantity,
         "total_amount": totalPrice,
-        "total": totalPrice
       });
     }
     print("ini cart $cart");
