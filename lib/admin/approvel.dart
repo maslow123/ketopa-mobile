@@ -25,7 +25,7 @@ class _ApprovalTransactionState extends State<ApprovalTransaction> {
 
   Future<void> fetchTransactions() async {
     final response = await http
-        .get(Uri.parse('http://172.20.10.2:8000/api/v1/transaction/list'));
+        .get(Uri.parse('http://192.168.0.107:8000/api/v1/transaction/list'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final result = data['result'][0];
@@ -42,7 +42,7 @@ class _ApprovalTransactionState extends State<ApprovalTransaction> {
   Future<void> updateTransactionStatus(
       String transactionCode, int newStatus) async {
     final url = Uri.parse(
-        'http://172.20.10.2:8000/api/v1/transaction/$transactionCode');
+        'http://192.168.0.107:8000/api/v1/transaction/$transactionCode');
     final response = await http.put(
       url,
       headers: {'Content-Type': 'application/json'},

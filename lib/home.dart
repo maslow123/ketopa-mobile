@@ -34,7 +34,7 @@ class _HomeState extends State<Home> {
 
   void fetchProducts() async {
     final response = await http
-        .get(Uri.parse('http://172.20.10.2:8000/api/v1/product/list'));
+        .get(Uri.parse('http://192.168.0.107:8000/api/v1/product/list'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -186,7 +186,11 @@ class ProductListScreen extends StatelessWidget {
         final product = products[index];
         return ListTile(
           leading: Icon(
-            Icons.medical_services,
+            product.category == "Cair"
+                ? Icons.medication_liquid
+                : (product.category == "Tablet"
+                    ? Icons.control_point_duplicate_outlined
+                    : Icons.medication_liquid),
             size: 60,
             color: Colors.blue,
           ),

@@ -23,7 +23,8 @@ class _CartState extends State<Cart> {
   void uploadEvidence() async {
     await getFromGallery();
     if (imageFile != null) {
-      var apiUrl = Uri.parse('http://172.20.10.2:8000/api/v1/upload/evidence');
+      var apiUrl =
+          Uri.parse('http://192.168.0.107:8000/api/v1/upload/evidence');
       var request = new http.MultipartRequest("POST", apiUrl);
       request.files.add(await http.MultipartFile.fromPath(
         'files',
@@ -63,7 +64,8 @@ class _CartState extends State<Cart> {
 
     print("ini data ${requestData}");
 
-    var apiUrl = Uri.parse('http://172.20.10.2:8000/api/v1/transaction/create');
+    var apiUrl =
+        Uri.parse('http://192.168.0.107:8000/api/v1/transaction/create');
     var response = await http.post(
       apiUrl,
       body: jsonEncode(requestData),
@@ -75,6 +77,7 @@ class _CartState extends State<Cart> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Transaction successfully.')));
       print(response.body);
+      Navigator.popAndPushNamed(context, "/upload");
       setState(() {
         widget.tempCart = [];
       });

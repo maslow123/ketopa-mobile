@@ -57,14 +57,20 @@ class _UserListState extends State<UserList> {
               itemBuilder: (context, index) {
                 final user = userList[index];
 
-                return ListTile(
-                  title: Text('Username: ${user['username']}'),
-                  subtitle: Text('Full Name: ${user['fullname']}'),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => deleteUser(index),
-                  ),
-                );
+                if (user['level'] == 0) {
+                  // Add this condition
+                  return ListTile(
+                    title: Text('Username: ${user['username']}'),
+                    subtitle: Text('Full Name: ${user['fullname']}'),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () => deleteUser(index),
+                    ),
+                  );
+                } else {
+                  return SizedBox
+                      .shrink(); // Hide the ListTile if the condition is not met
+                }
               },
             ),
     );

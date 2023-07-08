@@ -40,7 +40,7 @@ class _AddProductState extends State<AddProduct> {
 
   Future<void> fetchCategories() async {
     final response = await http.get(
-      Uri.parse('http://172.20.10.2:8000/api/v1/category/list'),
+      Uri.parse('http://192.168.0.107:8000/api/v1/category/list'),
     );
 
     if (response.statusCode == 200) {
@@ -86,7 +86,7 @@ class _AddProductState extends State<AddProduct> {
     };
 
     final response = await http.post(
-      Uri.parse('http://172.20.10.2:8000/api/v1/product/create'),
+      Uri.parse('http://192.168.0.107:8000/api/v1/product/create'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(requestBody),
     );
@@ -173,33 +173,33 @@ class _AddProductState extends State<AddProduct> {
               ),
             ),
             SizedBox(height: 26),
-            Column(
-              children: [
-                Center(
-                  child: Text(
-                    'Upload Foto',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: IconButton(
-                    onPressed: pickImage,
-                    icon: Icon(Icons.upload),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: 16),
-            selectedImage != null
-                ? Image.file(
-                    selectedImage!,
-                    height: 150,
-                  )
-                : Container(),
-            SizedBox(height: 16),
+            // Column(
+            //   children: [
+            //     Center(
+            //       child: Text(
+            //         'Upload Foto',
+            //         style: TextStyle(
+            //           fontSize: 16,
+            //           fontWeight: FontWeight.bold,
+            //         ),
+            //       ),
+            //     ),
+            //     Center(
+            //       child: IconButton(
+            //         onPressed: pickImage,
+            //         icon: Icon(Icons.upload),
+            //       ),
+            //     )
+            //   ],
+            // ),
+            // SizedBox(height: 16),
+            // selectedImage != null
+            //     ? Image.file(
+            //         selectedImage!,
+            //         height: 150,
+            //       )
+            //     : Container(),
+            // SizedBox(height: 16),
             ElevatedButton(
               onPressed: createProduct,
               child: Text('Create'),

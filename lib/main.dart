@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pharmacy_apps/admin/add.dart';
 import 'package:pharmacy_apps/admin/approvel.dart';
-import 'package:pharmacy_apps/admin/detail.dart';
 import 'package:pharmacy_apps/admin/index.dart';
 import 'package:pharmacy_apps/admin/product.dart';
 import 'package:pharmacy_apps/admin/users_list.dart';
@@ -65,11 +64,10 @@ class MainRouting extends StatelessWidget {
                         ),
                     "/upload": (context) => Upload(),
                     "/list-transaction": (context) => ListTransactionPage(),
-                    "/user/list": (context) => UserList(),
                     "/admin": (context) => Index(),
+                    "/admin/list-user": (context) => UserList(),
                     "/admin/product": (context) => ListProduct(),
                     "/admin/add": (context) => AddProduct(),
-                    "/admin/detail": (context) => DetailProduct(),
                     "/admin/approvel": (context) => ApprovalTransaction(),
                   },
                   onGenerateRoute: (settings) {

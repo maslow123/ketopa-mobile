@@ -25,8 +25,8 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
   }
 
   void postApprove(transactionId) async {
-    var apiUrl =
-        Uri.parse('http://172.20.10.2:8000/api/v1/transaction/$transactionId');
+    var apiUrl = Uri.parse(
+        'http://192.168.0.107:8000/api/v1/transaction/$transactionId');
     var response = await http.put(
       apiUrl,
       body: jsonEncode({"status": 1}),
@@ -38,6 +38,7 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Status Approved.')));
       print(response.body);
+      fetchTransactions();
     } else {
       // Registration failed, handle the response if needed
       ScaffoldMessenger.of(context)
@@ -54,17 +55,24 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
 
     if (level == 1) {
       final url = Uri.parse(
-          'http://172.20.10.2:8000/api/v1/transaction/list?user_id=0');
+          'http://192.168.0.107:8000/api/v1/transaction/list?user_id=0');
       final response = await http.get(
         url,
         headers: {
           'Content-Type': 'application/json',
         },
       );
+
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
+        List<dynamic> transactions = jsonResponse['result'];
+
+        // Sort transactions based on the transaction_status
+        transactions.sort((a, b) => a['data'][0]['transaction_status']
+            .compareTo(b['data'][0]['transaction_status']));
+
         setState(() {
-          transactions = jsonResponse['result'];
+          this.transactions = transactions;
         });
         print("ini transaksi ${transactions}");
       } else {
@@ -74,7 +82,7 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
       }
     } else {
       final url = Uri.parse(
-          'http://172.20.10.2:8000/api/v1/transaction/list?user_id=$id');
+          'http://192.168.0.107:8000/api/v1/transaction/list?user_id=$id');
       final response = await http.get(
         url,
         headers: {
@@ -85,7 +93,7 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         setState(() {
-          transactions = jsonResponse['result'];
+          this.transactions = jsonResponse['result'];
         });
       } else {
         print('Failed to fetch transaction ${response.body}');
@@ -117,9 +125,8 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
       appBar: AppBar(
         title: Text(
           'Transaction List',
-          style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
       ),
       body: ListView.builder(
         itemCount: transactions.length,
@@ -137,20 +144,32 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Image.network(
-                        "http://172.20.10.2:8000/api/v1/upload/image/evidence/${transaction['data'][0]['transaction_evidence']}",
+                        "http://192.168.0.107:8000/api/v1/upload/image/evidence/${transaction['data'][0]['transaction_evidence']}",
                         scale: 7,
+                        errorBuilder: (context, error, stackTrace) {
+                          if (error.toString().contains('ENOENT')) {
+                            return Image.network(
+                              'https://www.kliknusae.com/img/404.jpg',
+                              scale: 1,
+                            );
+                          } else {
+                            return Image.network(
+                              'https://www.kliknusae.com/img/404.jpg',
+                              scale: 1,
+                            );
+                            // return Container(); // or any other widget you want to display in case of other errors
+                          }
+                        },
                       ),
-                      SizedBox(
-                        height: 8,
-                      ),
+                      SizedBox(height: 8),
                       Text(
-                        'Transaction Code: ${transaction['transaction_code']}',
+                        'Transaction ID: ${transaction['transaction_code']}',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 8.0),
+                      SizedBox(height: 8),
                       Text('Total Quantity: ${transaction['total_quantity']}'),
-                      SizedBox(height: 8.0),
-                      Text('Total Amount: ${transaction['total_amount']}'),
+                      SizedBox(height: 8),
+                      Text('Total Amount: Rp.${transaction['total_amount']}'),
                     ],
                   ),
                 ),
@@ -166,8 +185,8 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Quantity: ${item['transaction_quantity']}'),
-                          Text('Price: ${item['product_price']}'),
-                          Text('Total: ${item['transaction_total']}'),
+                          Text('Price: Rp.${item['product_price']}'),
+                          Text('Total: Rp.${item['transaction_total']}'),
                         ],
                       ),
                     );
@@ -189,6 +208,22 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
                           transaction['data'][0]['transaction_status'] == 1
                               ? 'Approved'
                               : 'Approve'),
+                    ),
+                  ),
+                if (level == 0)
+                  Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              transaction['data'][0]['transaction_status'] == 1
+                                  ? Colors.green
+                                  : Color.fromARGB(255, 217, 159, 35)),
+                      onPressed: () {},
+                      child: Text(
+                          transaction['data'][0]['transaction_status'] == 1
+                              ? 'Approved'
+                              : 'Pending'),
                     ),
                   ),
               ],

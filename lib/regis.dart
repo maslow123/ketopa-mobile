@@ -37,7 +37,7 @@ class _RegisState extends State<Regis> {
       "address": address,
     };
 
-    var apiUrl = Uri.parse('http://172.20.10.2:8000/api/v1/user/create');
+    var apiUrl = Uri.parse('http://192.168.0.107:8000/api/v1/user/create');
     var response = await http.post(
       apiUrl,
       body: jsonEncode(requestData),
@@ -48,6 +48,7 @@ class _RegisState extends State<Regis> {
       // Registration successful, handle the response if needed
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Registration successfully.')));
+      Navigator.popAndPushNamed(context, "/login");
       print(response.body);
     } else {
       // Registration failed, handle the response if needed
@@ -63,9 +64,12 @@ class _RegisState extends State<Regis> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Daftar"),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
           children: [
             Padding(
               padding: EdgeInsets.only(top: 60, bottom: 20),
@@ -141,7 +145,6 @@ class _RegisState extends State<Regis> {
               child: GestureDetector(
                 onTap: () {
                   // Handle registration button click
-                  print("ini pencet");
                   registerUser();
                 },
                 child: Container(
