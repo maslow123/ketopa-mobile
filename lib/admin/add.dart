@@ -6,7 +6,7 @@ import 'dart:io';
 
 void main() {
   runApp(MaterialApp(
-    title: "Create Product Form",
+    title: "Buat Form Produk",
     home: AddProduct(),
   ));
 }
@@ -40,7 +40,7 @@ class _AddProductState extends State<AddProduct> {
 
   Future<void> fetchCategories() async {
     final response = await http.get(
-      Uri.parse('http://10.107.254.37:8000/api/v1/category/list'),
+      Uri.parse('http://172.20.10.2:8000/api/v1/category/list'),
     );
 
     if (response.statusCode == 200) {
@@ -86,7 +86,7 @@ class _AddProductState extends State<AddProduct> {
     };
 
     final response = await http.post(
-      Uri.parse('http://10.107.254.37:8000/api/v1/product/create'),
+      Uri.parse('http://172.20.10.2:8000/api/v1/product/create'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(requestBody),
     );

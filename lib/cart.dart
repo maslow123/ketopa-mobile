@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 
 class Cart extends StatefulWidget {
-  final List<Product> tempCart;
+  List<Product> tempCart;
   Cart({required this.tempCart});
 
   @override
@@ -23,7 +23,7 @@ class _CartState extends State<Cart> {
   void uploadEvidence() async {
     await getFromGallery();
     if (imageFile != null) {
-      var apiUrl = Uri.parse('http://localhost:8000/api/v1/upload/evidence');
+      var apiUrl = Uri.parse('http://172.20.10.2:8000/api/v1/upload/evidence');
       var request = new http.MultipartRequest("POST", apiUrl);
       request.files.add(await http.MultipartFile.fromPath(
         'files',
@@ -63,7 +63,7 @@ class _CartState extends State<Cart> {
 
     print("ini data ${requestData}");
 
-    var apiUrl = Uri.parse('http://localhost:8000/api/v1/transaction/create');
+    var apiUrl = Uri.parse('http://172.20.10.2:8000/api/v1/transaction/create');
     var response = await http.post(
       apiUrl,
       body: jsonEncode(requestData),
@@ -75,6 +75,9 @@ class _CartState extends State<Cart> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Transaction successfully.')));
       print(response.body);
+      setState(() {
+        widget.tempCart = [];
+      });
     } else {
       // Registration failed, handle the response if needed
       ScaffoldMessenger.of(context)
@@ -151,7 +154,7 @@ class _CartState extends State<Cart> {
         return AlertDialog(
           title: Text('Checkout'),
           content:
-              Text('Total Price: \Rp.${getTotalPrice().toStringAsFixed(2)}'),
+              Text('Total Harga: \Rp.${getTotalPrice().toStringAsFixed(2)}'),
           actions: [
             ElevatedButton(
               onPressed: () {

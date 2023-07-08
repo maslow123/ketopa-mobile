@@ -37,7 +37,7 @@ class _RegisState extends State<Regis> {
       "address": address,
     };
 
-    var apiUrl = Uri.parse('http://localhost:8000/api/v1/user/create');
+    var apiUrl = Uri.parse('http://172.20.10.2:8000/api/v1/user/create');
     var response = await http.post(
       apiUrl,
       body: jsonEncode(requestData),

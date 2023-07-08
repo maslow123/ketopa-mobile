@@ -26,7 +26,7 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
 
   void postApprove(transactionId) async {
     var apiUrl =
-        Uri.parse('http://localhost:8000/api/v1/transaction/$transactionId');
+        Uri.parse('http://172.20.10.2:8000/api/v1/transaction/$transactionId');
     var response = await http.put(
       apiUrl,
       body: jsonEncode({"status": 1}),
@@ -53,8 +53,8 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
     print(level);
 
     if (level == 1) {
-      final url =
-          Uri.parse('http://localhost:8000/api/v1/transaction/list?user_id=0');
+      final url = Uri.parse(
+          'http://172.20.10.2:8000/api/v1/transaction/list?user_id=0');
       final response = await http.get(
         url,
         headers: {
@@ -74,7 +74,7 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
       }
     } else {
       final url = Uri.parse(
-          'http://localhost:8000/api/v1/transaction/list?user_id=$id');
+          'http://172.20.10.2:8000/api/v1/transaction/list?user_id=$id');
       final response = await http.get(
         url,
         headers: {
@@ -137,7 +137,7 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Image.network(
-                        "http://localhost:8000/api/v1/upload/image/evidence/${transaction['data'][0]['transaction_evidence']}",
+                        "http://172.20.10.2:8000/api/v1/upload/image/evidence/${transaction['data'][0]['transaction_evidence']}",
                         scale: 7,
                       ),
                       SizedBox(
@@ -161,7 +161,7 @@ class _ListTransactionPageState extends State<ListTransactionPage> {
                   itemBuilder: (BuildContext context, int index) {
                     final item = transaction['data'][index];
                     return ListTile(
-                      title: Text('Product Name: ${item['product_name']}'),
+                      title: Text('Nama Produk: ${item['product_name']}'),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

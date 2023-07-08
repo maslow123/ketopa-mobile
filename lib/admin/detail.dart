@@ -19,7 +19,7 @@ class DetailProduct extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Details'),
+        title: Text('Detail Obat'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),

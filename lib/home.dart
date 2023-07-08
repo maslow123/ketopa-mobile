@@ -33,8 +33,8 @@ class _HomeState extends State<Home> {
   }
 
   void fetchProducts() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:8000/api/v1/product/list'));
+    final response = await http
+        .get(Uri.parse('http://172.20.10.2:8000/api/v1/product/list'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

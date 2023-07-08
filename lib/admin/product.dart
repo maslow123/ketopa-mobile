@@ -57,7 +57,7 @@ class _ListProductState extends State<ListProduct> {
 
   Future<void> fetchProducts() async {
     final response = await http
-        .get(Uri.parse('http://10.107.254.37:8000/api/v1/product/list'));
+        .get(Uri.parse('http://172.20.10.2:8000/api/v1/product/list'));
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final productList = jsonData['result'] as List<dynamic>;
@@ -80,7 +80,7 @@ class _ListProductState extends State<ListProduct> {
 
   Future<void> fetchCategories() async {
     final response = await http
-        .get(Uri.parse('http://10.107.254.37:8000/api/v1/category/list'));
+        .get(Uri.parse('http://172.20.10.2:8000/api/v1/category/list'));
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final categoryList = jsonData['result'] as List<dynamic>;
@@ -99,8 +99,8 @@ class _ListProductState extends State<ListProduct> {
   }
 
   Future<void> deleteProductAPI(int productId) async {
-    final response = await http.delete(
-        Uri.parse('http://10.107.254.37:8000/api/v1/product/$productId'));
+    final response = await http
+        .delete(Uri.parse('http://172.20.10.2:8000/api/v1/product/$productId'));
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Product delete successfully')));
@@ -112,8 +112,7 @@ class _ListProductState extends State<ListProduct> {
 
   Future<void> editProductAPI(
       int productId, Map<String, dynamic> updatedProductData) async {
-    final url =
-        Uri.parse('http://10.107.254.37:8000/api/v1/product/$productId');
+    final url = Uri.parse('http://172.20.10.2:8000/api/v1/product/$productId');
     final response = await http.put(
       url,
       body: jsonEncode({
