@@ -135,7 +135,7 @@ class _CartState extends State<Cart> {
       cart.add({
         "product_id": product.id,
         "quantity": product.quantity,
-        "total_amount": product.price * product.quantity,
+        "total": product.price * product.quantity,
       });
     }
     print("ini cart $cart");
